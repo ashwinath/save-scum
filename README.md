@@ -15,6 +15,7 @@ Files:
   - '--owner'
   - '--group'
   Chown:
+    Enabled: True
     User: ashwin
     Group: ashwin
 ```
