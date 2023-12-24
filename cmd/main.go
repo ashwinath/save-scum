@@ -2,7 +2,9 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/ashwinath/save-scum/pkg/config"
@@ -30,9 +32,25 @@ func main() {
 			defer filewg.Done()
 			o, err := shell.Rsync(f.Flags, f.From, f.To)
 			logOutput(o, err)
+
 			if f.Chown.Enabled {
 				o, err := shell.ChownRecursive(f.To, f.Chown.User, f.Chown.Group)
 				logOutput(o, err)
+			}
+
+			if err == nil && f.RemoveOriginal {
+				files, err := os.ReadDir(f.From)
+				if err != nil {
+					log.Printf("error reading directory: %v", err)
+					return
+				}
+
+				for _, fi := range files {
+					err := os.RemoveAll(fmt.Sprintf("%s%s", f.From, fi.Name()))
+					if err != nil {
+						log.Printf("error removing original location: %v", err)
+					}
+				}
 			}
 		}(file)
 	}
@@ -45,6 +63,6 @@ func logOutput(o *string, err error) {
 		log.Printf("output: %s", *o)
 	}
 	if err != nil {
-		log.Printf("stderr: %s", err.Error())
+		log.Printf("stderr: %v", err)
 	}
 }

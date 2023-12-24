@@ -11,10 +11,11 @@ type Config struct {
 }
 
 type FileConfig struct {
-	From  string   `yaml:"From"`
-	To    string   `yaml:"To"`
-	Flags []string `yaml:"Flags"`
-	Chown Chown    `yaml:"Chown"`
+	From           string   `yaml:"From"`
+	To             string   `yaml:"To"`
+	Flags          []string `yaml:"Flags"`
+	Chown          Chown    `yaml:"Chown"`
+	RemoveOriginal bool     `yaml:"RemoveOriginal"`
 }
 
 type Chown struct {

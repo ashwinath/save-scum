@@ -11,4 +11,4 @@ clean-bsd:
 	rm -f build/savescum-freebsd
 
 deploy: build-bsd
-	scp build/savescum-freebsd 192.168.50.11:/mnt/big-6-disk-pool/others/bin
+	scp build/savescum-freebsd 192.168.50.12:/mnt/big-6-disk-pool/others/bin

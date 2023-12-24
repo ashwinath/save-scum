@@ -1,13 +1,10 @@
 Files:
-- From: /home/ashwin/Downloads
-  To: /home/ashwin/tmp-rsync
+- From: /Users/ashwin/tmp/from/
+  To: /Users/ashwin/tmp/to/
   Flags:
   - '--recursive'
   - '--progress'
   - '--checksum'
   - '--owner'
   - '--group'
-  Chown:
-    Enabled: True
-    User: 1001
-    Group: 1001
+  RemoveOriginal: true
