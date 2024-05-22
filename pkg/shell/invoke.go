@@ -2,7 +2,9 @@ package shell
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
+	"time"
 )
 
 func runShell(binary string, args ...string) (*string, error) {
@@ -16,10 +18,17 @@ func runShell(binary string, args ...string) (*string, error) {
 }
 
 func Rsync(flags []string, from string, to string) (*string, error) {
-	var args []string
-	for _, flag := range flags {
-		args = append(args, flag)
+	timeNow := time.Now().Format("2006-01-02-15-04-05")
+	statusFileName := fmt.Sprintf("%s/save-scum-%s", to, timeNow)
+	err := os.WriteFile(statusFileName, []byte(""), 0755)
+	if err != nil {
+		fmt.Printf("unable to write status file: %s", err)
 	}
+
+	defer os.Remove(statusFileName)
+
+	var args []string
+	args = append(args, flags...)
 	args = append(args, from)
 	args = append(args, to)
 	return runShell("rsync", args...)
