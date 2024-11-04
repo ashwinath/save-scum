@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 	"time"
 )
 
@@ -18,6 +19,11 @@ func runShell(binary string, args ...string) (*string, error) {
 }
 
 func Rsync(flags []string, from string, to string) (*string, error) {
+	// Check if save scum file is there
+	if checkIfTransferInProgress(to) {
+		return nil, fmt.Errorf("transfer in progress, skipping")
+	}
+
 	timeNow := time.Now().Format("2006-01-02-15-04-05")
 	statusFileName := fmt.Sprintf("%s/save-scum-%s", to, timeNow)
 	err := os.WriteFile(statusFileName, []byte(""), 0755)
@@ -32,6 +38,17 @@ func Rsync(flags []string, from string, to string) (*string, error) {
 	args = append(args, from)
 	args = append(args, to)
 	return runShell("rsync", args...)
+}
+
+func checkIfTransferInProgress(to string) bool {
+	files, _ := os.ReadDir(to)
+
+	for _, file := range files {
+		if strings.HasPrefix(file.Name(), "save-scum-") {
+			return true
+		}
+	}
+	return false
 }
 
 func ChownRecursive(path string, user string, group string) (*string, error) {
